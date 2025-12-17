@@ -28,33 +28,33 @@
             height: 100vh;
             z-index: 1;
         }
-        /* 祝福气泡：新增彩色边框 + 调整内边距（避免边框挤压文字） */
+        /* 祝福气泡：适配16px字号，调整内边距/尺寸 */
         .blessing-bubble {
             position: absolute;
             background: rgba(255, 255, 255, 0.95);
             border-radius: 20px;
-            padding: 18px 22px;
+            padding: 20px 25px; /* 适配16px字号的内边距 */
             box-shadow: 0 8px 20px rgba(0, 255, 255, 0.3);
             opacity: 0;
             transform: scale(0.8);
             transition: all 0.5s ease;
             z-index: 2;
-            max-width: 80%;
+            max-width: 80%; /* 手机端适配宽度 */
             width: fit-content;
-            min-width: 200px;
-            /* 核心：彩色边框（宽度3px，圆角和气泡一致） */
+            min-width: 220px; /* 适配16px字号的最小宽度 */
+            /* 彩色边框 */
             border-width: 3px;
             border-style: solid;
-            /* 边框颜色由JS随机生成，这里先设默认值 */
             border-color: #ff6b6b;
         }
         .blessing-bubble.active {
             opacity: 1;
             transform: scale(1);
         }
+        /* 字号改为16px，优化行高保证阅读舒适 */
         .blessing-text {
-            font-size: 18px;
-            line-height: 1.6;
+            font-size: 16px; /* 核心：字号改为16px */
+            line-height: 1.7; /* 适配16px的行高 */
             color: #333;
             text-align: center;
             word-wrap: break-word;
@@ -66,7 +66,6 @@
             height: 0;
             border-left: 10px solid transparent;
             border-right: 10px solid transparent;
-            /* 尾巴也要匹配边框颜色（JS同步修改） */
             filter: drop-shadow(0 0 0px);
         }
     </style>
@@ -196,20 +195,20 @@
         animateFireworks();
         setInterval(createFirework, 1500);
 
-        // 祝福气泡逻辑（新增随机边框颜色）
+        // 祝福气泡逻辑
         const container = document.getElementById('blessing-container');
         let index = 0;
 
-        // 生成随机彩色边框（和烟花色调匹配）
+        // 生成随机彩色边框
         function getRandomBorderColor() {
-            // 生成鲜艳的随机色（HSL色相随机，饱和度80-100%，亮度50-70%）
             const hue = Math.floor(Math.random() * 360);
             return `hsl(${hue}, 90%, 60%)`;
         }
 
         function getRandomPosition() {
-            const bubbleWidth = Math.min(280, window.innerWidth * 0.8);
-            const bubbleHeight = 120;
+            // 适配16px字号的气泡尺寸，调整位置计算
+            const bubbleWidth = Math.min(300, window.innerWidth * 0.8);
+            const bubbleHeight = 140; // 适配16px字号的气泡高度
             const maxX = window.innerWidth - bubbleWidth - 20;
             const maxY = window.innerHeight - bubbleHeight - 20;
             return {
@@ -227,19 +226,19 @@
 
             if (randomPos === 'bottom-left') {
                 tail.style.bottom = '-10px';
-                tail.style.left = '25px';
+                tail.style.left = '30px'; // 适配16px字号气泡的尾巴位置
                 tail.style.borderTop = `10px solid ${borderColor}`;
             } else if (randomPos === 'bottom-right') {
                 tail.style.bottom = '-10px';
-                tail.style.right = '25px';
+                tail.style.right = '30px';
                 tail.style.borderTop = `10px solid ${borderColor}`;
             } else if (randomPos === 'top-left') {
                 tail.style.top = '-10px';
-                tail.style.left = '25px';
+                tail.style.left = '30px';
                 tail.style.borderBottom = `10px solid ${borderColor}`;
             } else {
                 tail.style.top = '-10px';
-                tail.style.right = '25px';
+                tail.style.right = '30px';
                 tail.style.borderBottom = `10px solid ${borderColor}`;
             }
             
@@ -250,22 +249,22 @@
             const bubble = document.createElement('div');
             bubble.className = 'blessing-bubble';
             
-            // 1. 生成随机边框颜色并设置
+            // 设置随机边框颜色
             const borderColor = getRandomBorderColor();
             bubble.style.borderColor = borderColor;
             
-            // 2. 设置随机位置
+            // 设置随机位置
             const pos = getRandomPosition();
             bubble.style.left = `${pos.x}px`;
             bubble.style.top = `${pos.y}px`;
             
-            // 3. 设置文字内容
+            // 设置文字内容
             const textEl = document.createElement('p');
             textEl.className = 'blessing-text';
             textEl.innerHTML = text;
             bubble.appendChild(textEl);
             
-            // 4. 设置气泡尾巴（匹配边框颜色）
+            // 设置气泡尾巴
             setBubbleTail(bubble, borderColor);
             
             container.appendChild(bubble);
